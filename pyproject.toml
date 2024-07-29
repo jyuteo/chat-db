@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chat-db"
+version = "0.1.0"
+description = "Generate SQL and provide natural language response for DB-related query"
+requires-python = ">=3.10"
+
+[tool.black]
+target-version = ['py310']
+line-length = 120
