@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_session import Session
 
 from app.api import db
+from llm import OpenAILLMClient
 
 dotenv.load_dotenv()
 
@@ -35,9 +36,12 @@ def list_routes(app):
 
 
 if __name__ == "__main__":
-    app = init_app()
-    list_routes(app)
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    # app = init_app()
+    # list_routes(app)
+    # app.run(host="127.0.0.1", port=5000, debug=False)
+    openai_client = OpenAILLMClient(api_key=os.getenv("OPENAI_API_KEY"))
+    response = openai_client.send_message("Who are you?")
+    print(response)
 
 
 # import os

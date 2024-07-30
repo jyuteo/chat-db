@@ -11,7 +11,7 @@ from vector_store.tidb.models import (
     create_question_sql_model,
 )
 from vector_store.tidb.utils import convert_sqlalchemy_model_to_dataclass
-from data_types import DBType
+from db_client import DBType
 from logger import get_logger
 
 logger = get_logger()
