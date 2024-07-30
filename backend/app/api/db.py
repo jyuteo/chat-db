@@ -3,9 +3,6 @@ from typing import Dict
 from flask import Blueprint, session, jsonify, request
 
 from db_client import MySQLDBClient
-from logger import get_logger
-
-logger = get_logger()
 
 db_conn_cache: Dict[str, MySQLDBClient] = {}
 

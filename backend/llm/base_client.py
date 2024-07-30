@@ -7,9 +7,14 @@ class LLMResponse:
     sql: str = None
 
 
+@dataclass
+class LLMClientConfig:
+    pass
+
+
 class LLMClient(ABC):
-    def __init__(self, max_token: int = 14000):
-        self.max_token = max_token
+    def __init__(self):
+        pass
 
     @abstractmethod
     def send_message(self, message: str) -> LLMResponse:

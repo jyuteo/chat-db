@@ -6,8 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_session import Session
 
-from app.api import db
-from llm import OpenAILLMClient
+from app.api import db, chat
 
 dotenv.load_dotenv()
 
@@ -25,6 +24,7 @@ def init_app():
     Session(app)
 
     app.register_blueprint(db)
+    app.register_blueprint(chat)
 
     return app
 
@@ -36,12 +36,9 @@ def list_routes(app):
 
 
 if __name__ == "__main__":
-    # app = init_app()
-    # list_routes(app)
-    # app.run(host="127.0.0.1", port=5000, debug=False)
-    openai_client = OpenAILLMClient(api_key=os.getenv("OPENAI_API_KEY"))
-    response = openai_client.send_message("Who are you?")
-    print(response)
+    app = init_app()
+    list_routes(app)
+    app.run(host="127.0.0.1", port=5050, debug=True)
 
 
 # import os

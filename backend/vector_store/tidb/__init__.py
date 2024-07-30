@@ -1,1 +1,1 @@
-from .handler import TiDBVectorStoreHandler
+from .handler import TiDBVectorStoreHandler, TiDBVectorStoreConfig

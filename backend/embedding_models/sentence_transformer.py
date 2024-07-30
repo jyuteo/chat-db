@@ -1,7 +1,8 @@
+from dataclasses import dataclass
 from enum import Enum
 from sentence_transformers import SentenceTransformer
 
-from embedding_models import EmbeddingModel
+from embedding_models import EmbeddingModel, EmbeddingModelConfig
 from logger import get_logger
 
 logger = get_logger()
@@ -13,12 +14,14 @@ class SentenceTransformerModelName(str, Enum):
     ALL_MINILM_L6_384 = "all-MiniLM-L6-v2"
 
 
+@dataclass
+class SentenceTransformerEmbeddingModelConfig(EmbeddingModelConfig):
+    model_name: SentenceTransformerModelName = SentenceTransformerModelName.ALL_MINILM_L12_384
+
+
 class SentenceTransformerEmbeddingModel(EmbeddingModel):
-    def __init__(
-        self,
-        model_name: SentenceTransformerModelName = SentenceTransformerModelName.ALL_MINILM_L12_384,
-    ):
-        self._model_name = model_name
+    def __init__(self, config: SentenceTransformerEmbeddingModelConfig):
+        self._model_name = config.model_name
 
         logger.info(f"Downloading and loading embedding model {self._model_name}...")
         self._embedding_model = SentenceTransformer(self._model_name, trust_remote_code=True)

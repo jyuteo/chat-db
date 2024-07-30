@@ -1,7 +1,7 @@
 from enum import Enum
 
-from .base_handler import VectorStoreHandler, DBTableInfo, QuestionSQL
-from .tidb import TiDBVectorStoreHandler
+from .base_handler import VectorStoreHandler, VectorStoreConfig, DBTableInfo, QuestionSQL
+from .tidb import TiDBVectorStoreHandler, TiDBVectorStoreConfig
 
 
 class VectorStoreType(str, Enum):
@@ -10,8 +10,9 @@ class VectorStoreType(str, Enum):
 
 class VectorStoreHandlerFactory:
     @staticmethod
-    def create(vector_store_type: VectorStoreType, *args, **kwargs) -> VectorStoreHandler:
+    def create(vector_store_type: VectorStoreType, vector_store_config: VectorStoreConfig) -> VectorStoreHandler:
         if vector_store_type == VectorStoreType.TIDB:
-            return TiDBVectorStoreHandler(*args, **kwargs)
+            assert isinstance(vector_store_config, TiDBVectorStoreConfig)
+            return TiDBVectorStoreHandler(vector_store_config)
         else:
             raise ValueError(f"Unsupported vector store type: {vector_store_type}")

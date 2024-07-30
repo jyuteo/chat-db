@@ -28,6 +28,12 @@ class QuestionSQL:
     updated_at: datetime = None
 
 
+@dataclass
+class VectorStoreConfig:
+    embedding_model_name: str = None
+    embedding_model_dim: int = None
+
+
 class VectorStoreHandler(ABC):
     @abstractmethod
     def insert_db_table_info(self, data: List[DBTableInfo]):

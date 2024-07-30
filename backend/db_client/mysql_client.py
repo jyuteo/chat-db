@@ -1,19 +1,30 @@
+from dataclasses import dataclass
+
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
-from db_client import DBClient
+from db_client import DBClient, DBConnConfig
 from logger import get_logger
 
 logger = get_logger()
 
 
+@dataclass
+class MySQLConnConfig(DBConnConfig):
+    host: str
+    user: str
+    password: str
+    database: str
+    port: int = 3306
+
+
 class MySQLDBClient(DBClient):
-    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-        self.port = port
+    def __init__(self, db_conn_config: MySQLConnConfig):
+        self.host = db_conn_config.host
+        self.user = db_conn_config.user
+        self.password = db_conn_config.password
+        self.database = db_conn_config.database
+        self.port = db_conn_config.port
         self.db_conn = self.connect()
 
     def connect(self) -> Engine:

@@ -1,10 +1,10 @@
-from dataclasses import asdict
+from dataclasses import dataclass, asdict
 from typing import List, Tuple, Dict
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from vector_store import VectorStoreHandler, DBTableInfo, QuestionSQL
+from vector_store import VectorStoreHandler, VectorStoreConfig, DBTableInfo, QuestionSQL
 from vector_store.tidb.models import (
     Base,
     create_db_table_info_model,
@@ -17,22 +17,29 @@ from logger import get_logger
 logger = get_logger()
 
 
+@dataclass
+class TiDBVectorStoreConfig(VectorStoreConfig):
+    db_connection_string: str = None
+    db_type: DBType = None
+    reset_db: bool = False
+
+
 class TiDBVectorStoreHandler(VectorStoreHandler):
     def __init__(
         self,
-        db_connection_string: str,
-        db_type: DBType,
-        embedding_model_name: str,
-        embedding_model_dim: int,
-        reset_db=False,
+        config: TiDBVectorStoreConfig,
     ):
-        self.engine = create_engine(db_connection_string)
+        self.engine = create_engine(config.db_connection_string)
         self.sessionmaker = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 
-        self.DBTableInfoModel = create_db_table_info_model(db_type, embedding_model_name, embedding_model_dim)
-        self.QuestionSQLModel = create_question_sql_model(db_type, embedding_model_name, embedding_model_dim)
+        self.DBTableInfoModel = create_db_table_info_model(
+            config.db_type, config.embedding_model_name, config.embedding_model_dim
+        )
+        self.QuestionSQLModel = create_question_sql_model(
+            config.db_type, config.embedding_model_name, config.embedding_model_dim
+        )
 
-        if reset_db:
+        if config.reset_db:
             logger.warning("Recreating tidb vector store...")
             Base.metadata.drop_all(bind=self.engine)
             Base.metadata.create_all(bind=self.engine)

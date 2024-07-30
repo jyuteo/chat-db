@@ -23,7 +23,7 @@ class OpenAILLMClient(LLMClient):
         *args,
         **kwargs,
     ):
-        super().__init__(max_token=max_token, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.openai_client = OpenAI(api_key=api_key)
 

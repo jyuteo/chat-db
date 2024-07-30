@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from db_client import DBType, DBClientFactory, DBClient
-from embedding_models import EmbeddingModelType, EmbeddingModelFactory, EmbeddingModel
+from db_client import DBType, DBConnConfig, DBClientFactory, DBClient
+from embedding_models import EmbeddingModelType, EmbeddingModelConfig, EmbeddingModelFactory, EmbeddingModel
 from vector_store import VectorStoreType, VectorStoreHandlerFactory, VectorStoreHandler
-from llm import LLMType, LLMClientFactory, LLMClient, LLMResponse
+from llm import LLMType, LLMClientFactory, LLMClientConfig, LLMClient
 
 
 class ChatHandler(ABC):
@@ -38,17 +38,26 @@ class ChatHandler(ABC):
         except ValueError:
             raise ValueError(f"Invalid db type: {db_type}")
 
-    def init_vector_store(self, *args, **kwargs) -> VectorStoreHandler:
-        return VectorStoreHandlerFactory.create(self.vector_store_type, *args, **kwargs)
+    def init_vector_store(self, vector_store_config) -> VectorStoreHandler:
+        return VectorStoreHandlerFactory.create(self.vector_store_type, vector_store_config)
 
-    def init_embedding_model(self, *args, **kwargs) -> EmbeddingModel:
-        return EmbeddingModelFactory.create(self.embedding_model_type, *args, **kwargs)
+    def init_embedding_model(self, embedding_model_config: EmbeddingModelConfig) -> EmbeddingModel:
+        return EmbeddingModelFactory.create(self.embedding_model_type, embedding_model_config)
 
-    def init_llm_client(self, *args, **kwargs) -> LLMClient:
-        return LLMClientFactory.create(self.llm_type, *args, **kwargs)
+    def init_llm_client(self, llm_client_config: LLMClientConfig) -> LLMClient:
+        return LLMClientFactory.create(self.llm_type, llm_client_config)
 
-    def init_db_client(self, db_type: DBType, *args, **kwargs) -> DBClient:
-        return DBClientFactory.create(db_type, *args, **kwargs)
+    def init_db_client(self, db_conn_config: DBConnConfig) -> DBClient:
+        return DBClientFactory.create(self.db_type, db_conn_config)
+
+    def submit_prompt(self, prompt: str) -> str:
+        response = self.llm_client.send_message(prompt)
+        return response
+
+    def get_sql_from_llm(self, question: str, *args, **kwargs) -> str:
+        response = self.submit_prompt(question)
+        # parse response as LLMResponse
+        return response
 
     @abstractmethod
     def generate_prompt_to_get_sql(self, question: str, *args, **kwargs) -> str:
@@ -56,14 +65,6 @@ class ChatHandler(ABC):
 
     @abstractmethod
     def generate_prompt_to_get_natural_language_answer(self, question: str, sql: str, *args, **kwargs) -> str:
-        pass
-
-    @abstractmethod
-    def submit_prompt(self, prompt: str) -> LLMResponse:
-        pass
-
-    @abstractmethod
-    def get_sql_from_llm(self, question: str, *args, **kwargs) -> str:
         pass
 
     @abstractmethod
