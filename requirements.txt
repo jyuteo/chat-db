@@ -1,3 +1,4 @@
+backoff
 black
 flake8
 flask
@@ -5,12 +6,14 @@ flask-cors
 flask-session
 flask-marshmallow
 marshmallow
+openai==1.37.1
 PyMySQL==1.1.0
 python-dotenv==1.0.0
 redis
 sentence-transformers==3.0.1
 SQLAlchemy==2.0.30
 tidb-vector==0.0.9
+tiktoken
 
 
 
