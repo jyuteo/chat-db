@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
@@ -16,6 +17,17 @@ class MySQLConnConfig(DBConnConfig):
     password: str
     database: str
     port: int = 3306
+
+
+class MySQLQueries:
+    GET_TABLES_IN_DATABASE = """ 
+        SELECT table_name FROM information_schema.tables 
+        WHERE table_schema = '{database}';
+    """
+
+    GET_TABLE_SCHEMA = """
+        SHOW CREATE TABLE `{table_name}`;
+    """
 
 
 class MySQLDBClient(DBClient):
@@ -48,3 +60,14 @@ class MySQLDBClient(DBClient):
         except Exception as e:
             logger.error(f"Error executing query: {e}")
             raise e
+
+    def get_tables_in_database(self) -> List[str]:
+        query = MySQLQueries.GET_TABLES_IN_DATABASE.format(database=self.database)
+        result = self.execute_query(query)
+        tables = [r["TABLE_NAME"] for r in result]
+        return tables
+
+    def get_table_schema(self, table_name: str) -> str:
+        query = MySQLQueries.GET_TABLE_SCHEMA.format(table_name=table_name)
+        result = self.execute_query(query)
+        return result[0]["Create Table"].replace("\n", "")

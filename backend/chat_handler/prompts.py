@@ -15,5 +15,26 @@ class Prompts:
             6. The SQL generated should be able to answer the question. You can refer to some example question-sql pairs provided in the message.
     """  # noqa: E501 line too long
 
-    QUESTION_SQL_PAIRS_PROMPT = """
+    USER_QUESTION_PROMPT = """
+        With all these information, provide response for the question: {question}.
+    """
+
+    GENERAL_QUESTION_SQL_PAIRS_WITHOUT_TABLE = """
+        Here are some examples of sql that should be generated given the question:
+        {question_sql_pairs}
+    """
+
+    QUESTION_SQL_PAIRS_FOR_TABLE = """
+        Here are some examples of sql that should be generated given the question for a table with schema {table_schema}:
+        {question_sql_pairs}
+    """
+
+    QUESTION_SQL_PAIR = """
+        Question: {question}
+        SQL: {sql}
+    """
+
+    TABLE_SCHEMA_IN_DB_PROMPT = """
+        Here are the schemas of the tables in this database:
+        {table_schemas}
     """

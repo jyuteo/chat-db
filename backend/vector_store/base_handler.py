@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Tuple, Dict
 
+from db_client import DBType
+
 
 @dataclass
 class DBTableInfo:
@@ -30,6 +32,7 @@ class QuestionSQL:
 
 @dataclass
 class VectorStoreConfig:
+    db_type: DBType = None
     embedding_model_name: str = None
     embedding_model_dim: int = None
 

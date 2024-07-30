@@ -10,6 +10,7 @@ Base = declarative_base()
 def create_db_table_info_model(db_type: str, embedding_model_name: str, embedding_model_dim: int):
     class DBTableInfoModel(Base):
         __tablename__ = f"db_table_info_{db_type}_{embedding_model_name}"
+        __table_args__ = {"extend_existing": True}
 
         id = Column(Integer, primary_key=True, autoincrement=True)
         database_name = Column(String(255), nullable=False)
@@ -38,6 +39,7 @@ def create_db_table_info_model(db_type: str, embedding_model_name: str, embeddin
 def create_question_sql_model(db_type: str, embedding_model_name: str, embedding_model_dim: int):
     class QuestionSQLModel(Base):
         __tablename__ = f"question_sql_{db_type}_{embedding_model_name}"
+        __table_args__ = {"extend_existing": True}
 
         id = Column(Integer, primary_key=True, autoincrement=True)
         database_name = Column(String(255), nullable=True)

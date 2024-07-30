@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from db_client import DBType, DBConnConfig, DBClientFactory, DBClient
 from embedding_models import EmbeddingModelType, EmbeddingModelConfig, EmbeddingModelFactory, EmbeddingModel
-from vector_store import VectorStoreType, VectorStoreHandlerFactory, VectorStoreHandler
+from vector_store import VectorStoreType, VectorStoreConfig, VectorStoreHandlerFactory, VectorStoreHandler
 from llm import LLMType, LLMClientFactory, LLMClientConfig, LLMClient
 
 
@@ -16,29 +16,29 @@ class ChatHandler(ABC):
     ):
         try:
             self.vector_store_type = VectorStoreType(vector_store_type)
-            self.vector_store = None
+            self.vector_store: VectorStoreHandler = None
         except ValueError:
             raise ValueError(f"Invalid vector store type: {vector_store_type}")
 
         try:
             self.embedding_model_type = EmbeddingModelType(embedding_model_type)
-            self.embedding_model = None
+            self.embedding_model: EmbeddingModel = None
         except ValueError:
             raise ValueError(f"Invalid embedding model type: {embedding_model_type}")
 
         try:
             self.llm_type = LLMType(llm_type)
-            self.llm_client = None
+            self.llm_client: LLMClient = None
         except ValueError:
             raise ValueError(f"Invalid llm type: {llm_type}")
 
         try:
             self.db_type = DBType(db_type)
-            self.db_client = None
+            self.db_client: DBClient = None
         except ValueError:
             raise ValueError(f"Invalid db type: {db_type}")
 
-    def init_vector_store(self, vector_store_config) -> VectorStoreHandler:
+    def init_vector_store(self, vector_store_config: VectorStoreConfig) -> VectorStoreHandler:
         return VectorStoreHandlerFactory.create(self.vector_store_type, vector_store_config)
 
     def init_embedding_model(self, embedding_model_config: EmbeddingModelConfig) -> EmbeddingModel:

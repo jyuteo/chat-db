@@ -1,3 +1,6 @@
+import os
+import dotenv
+
 from dataclasses import dataclass, asdict
 from typing import List, Tuple, Dict
 
@@ -11,16 +14,15 @@ from vector_store.tidb.models import (
     create_question_sql_model,
 )
 from vector_store.tidb.utils import convert_sqlalchemy_model_to_dataclass
-from db_client import DBType
 from logger import get_logger
 
+
+dotenv.load_dotenv()
 logger = get_logger()
 
 
 @dataclass
 class TiDBVectorStoreConfig(VectorStoreConfig):
-    db_connection_string: str = None
-    db_type: DBType = None
     reset_db: bool = False
 
 
@@ -29,7 +31,15 @@ class TiDBVectorStoreHandler(VectorStoreHandler):
         self,
         config: TiDBVectorStoreConfig,
     ):
-        self.engine = create_engine(config.db_connection_string)
+        tidb_host = os.getenv("TIDB_HOST")
+        tidb_port = os.getenv("TIDB_PORT")
+        tidb_user = os.getenv("TIDB_USERNAME")
+        tidb_password = os.getenv("TIDB_PASSWORD")
+        tidb_database = os.getenv("TIDB_DATABASE")
+        tidb_ssl_ca_path = os.getenv("TIDB_SSL_CA_PATH")
+        tidb_connection_string = f"mysql+pymysql://{tidb_user}:{tidb_password}@{tidb_host}:{tidb_port}/{tidb_database}?ssl_ca={tidb_ssl_ca_path}&ssl_verify_cert=true&ssl_verify_identity=true"  # noqa: E501 line too long
+
+        self.engine = create_engine(tidb_connection_string)
         self.sessionmaker = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 
         self.DBTableInfoModel = create_db_table_info_model(

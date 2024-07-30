@@ -6,7 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_session import Session
 
-from app.api import db, chat
+from api import db, chat
 
 dotenv.load_dotenv()
 
@@ -39,6 +39,26 @@ if __name__ == "__main__":
     app = init_app()
     list_routes(app)
     app.run(host="127.0.0.1", port=5050, debug=True)
+
+    # from llm import GeminiLLMClient, GeminiLLMClientConfig
+
+    # gemini = GeminiLLMClient(GeminiLLMClientConfig(api_key="AIzaSyD-kgJ2JOUg03zvXYsCHPGa876-L-2Gi5g"))
+    # res = gemini.send_message("who are you")
+    # print(res)
+
+    # from db_client import MySQLDBClient, MySQLConnConfig
+
+    # db_client = MySQLDBClient(
+    #     MySQLConnConfig(
+    #         host="localhost",
+    #         user="root",
+    #         password="12345678",
+    #         database="test",
+    #     )
+    # )
+    # tables = db_client.get_tables_in_database()
+    # for t in tables:
+    #     print(db_client.get_table_schema(t))
 
 
 # import os

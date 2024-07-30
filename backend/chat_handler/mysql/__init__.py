@@ -1,1 +1,1 @@
-from .handler import MySQLChatHandler
+from .mysql_handler import MySQLChatHandler

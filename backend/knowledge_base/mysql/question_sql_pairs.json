@@ -1,0 +1,772 @@
+[
+  {
+    "database_name": "",
+    "table_name": "",
+    "schema": "",
+    "question_sql_pairs": [
+      {
+        "question": "Why is my database experiencing slow performance suddenly?",
+        "sql": "SHOW PROCESSLIST;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why am I getting a 'deadlock' error in my database?",
+        "sql": "SHOW ENGINE INNODB STATUS;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the database showing high load?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Threads_running';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the table size increasing rapidly?",
+        "sql": "SELECT table_schema, table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS table_size_mb FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys');",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are there so many connections to my database?",
+        "sql": "SHOW VARIABLES LIKE 'max_connections'; SHOW STATUS WHERE `variable_name` = 'Threads_connected';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my slow query log not capturing all the slow queries?",
+        "sql": "SHOW VARIABLES LIKE 'slow_query_log'; SHOW VARIABLES LIKE 'slow_query_log_file';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the buffer pool not being utilized efficiently?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why do some tables have a large number of index entries?",
+        "sql": "SHOW INDEX FROM table_name;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my replication lagging behind?",
+        "sql": "SHOW SLAVE STATUS\\G;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is there a high number of table locks?",
+        "sql": "SHOW OPEN TABLES WHERE In_use > 0;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why does the disk usage for my database seem unusually high?",
+        "sql": "SELECT table_schema AS db_name, SUM(data_length + index_length) / 1024 / 1024 AS size_mb FROM information_schema.tables GROUP BY table_schema;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are there errors in the error log?",
+        "sql": "SHOW VARIABLES LIKE 'log_error';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are my triggers not executing as expected?",
+        "sql": "SHOW TRIGGERS;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my MySQL server version outdated?",
+        "sql": "SELECT VERSION();",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are certain queries taking a long time to execute?",
+        "sql": "SELECT * FROM performance_schema.events_statements_summary_by_digest ORDER BY AVG_TIMER_WAIT DESC LIMIT 10;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the execution plan not optimized for my queries?",
+        "sql": "EXPLAIN SELECT * FROM table_name WHERE condition;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are there orphaned records in my tables?",
+        "sql": "SELECT a.id FROM parent_table a LEFT JOIN child_table b ON a.id = b.parent_id WHERE b.parent_id IS NULL;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the query cache not being utilized?",
+        "sql": "SHOW VARIABLES LIKE '%query_cache%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is there a mismatch in user privileges?",
+        "sql": "SHOW GRANTS FOR 'user'@'host';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is there a delay in the backup operations?",
+        "sql": "SHOW VARIABLES LIKE 'backup_%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the schema change not applied?",
+        "sql": "SHOW VARIABLES LIKE 'version';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the database running out of disk space?",
+        "sql": "SELECT table_schema, ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS total_size_mb FROM information_schema.tables GROUP BY table_schema;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are certain tables not being backed up properly?",
+        "sql": "SHOW VARIABLES LIKE 'backup_%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my database server having issues with network latency?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Com_select'; SHOW GLOBAL STATUS LIKE 'Com_insert';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why does the database have a high number of deadlocks?",
+        "sql": "SHOW ENGINE INNODB STATUS;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are some queries returning unexpected results?",
+        "sql": "EXPLAIN SELECT * FROM table_name WHERE condition;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my replication lag increasing?",
+        "sql": "SHOW SLAVE STATUS\\G;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are there many slow queries in my database?",
+        "sql": "SELECT * FROM mysql.slow_log;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are the connections being dropped?",
+        "sql": "SHOW VARIABLES LIKE 'max_connections'; SHOW STATUS WHERE `variable_name` = 'Threads_connected';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the transaction log file size too large?",
+        "sql": "SHOW VARIABLES LIKE 'innodb_log_file_size';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my database not accepting new connections?",
+        "sql": "SHOW VARIABLES LIKE 'max_connections';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are certain indexes not being used?",
+        "sql": "SHOW INDEX FROM table_name;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are my database triggers failing?",
+        "sql": "SHOW TRIGGERS;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the server not handling concurrent requests well?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Threads_running';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are there performance issues with certain queries?",
+        "sql": "SELECT * FROM performance_schema.events_statements_summary_by_digest ORDER BY AVG_TIMER_WAIT DESC LIMIT 10;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the buffer pool not clearing up old data?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are there issues with database consistency?",
+        "sql": "CHECK TABLE table_name;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is the disk I/O high for my database?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Innodb_data_reads'; SHOW GLOBAL STATUS LIKE 'Innodb_data_writes';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why is my MySQL server not starting?",
+        "sql": "SHOW VARIABLES LIKE 'log_error';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Why are backups taking longer than expected?",
+        "sql": "SHOW VARIABLES LIKE 'backup_%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "My database is slow suddenly, what can I do?",
+        "sql": "SHOW PROCESSLIST;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "Is there a deadlock in the database now?",
+        "sql": "SHOW ENGINE INNODB STATUS;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How busy is the database now?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Threads_running';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What is the table size of all tables?",
+        "sql": "SELECT table_schema, table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS table_size_mb FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'mysql', 'performance_schema', 'sys');",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How to check the connections in the database?",
+        "sql": "SHOW VARIABLES LIKE 'max_connections'; SHOW STATUS WHERE `variable_name` = 'Threads_connected';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What are the most time-consuming queries currently running?",
+        "sql": "SELECT * FROM information_schema.PROCESSLIST WHERE COMMAND != 'Sleep' ORDER BY TIME DESC;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I check the slow query log?",
+        "sql": "SHOW VARIABLES LIKE 'slow_query_log'; SHOW VARIABLES LIKE 'slow_query_log_file';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What are the index statistics for the tables?",
+        "sql": "SHOW INDEX FROM table_name;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What is the replication status?",
+        "sql": "SHOW SLAVE STATUS\\G;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I monitor the buffer pool usage?",
+        "sql": "SHOW GLOBAL STATUS LIKE 'Innodb_buffer_pool%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What is the status of table locks?",
+        "sql": "SHOW OPEN TABLES WHERE In_use > 0;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I view the disk usage for my database?",
+        "sql": "SELECT table_schema AS db_name, SUM(data_length + index_length) / 1024 / 1024 AS size_mb FROM information_schema.tables GROUP BY table_schema;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What are the most recent errors in the error log?",
+        "sql": "SHOW VARIABLES LIKE 'log_error';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I check the status of all database triggers?",
+        "sql": "SHOW TRIGGERS;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What is the current version of the MySQL server?",
+        "sql": "SELECT VERSION();",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I find out which queries are causing the most load on the server?",
+        "sql": "SELECT * FROM performance_schema.events_statements_summary_by_digest ORDER BY AVG_TIMER_WAIT DESC LIMIT 10;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I get the execution plan for a query?",
+        "sql": "EXPLAIN SELECT * FROM table_name WHERE condition;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I check if there are any orphaned records?",
+        "sql": "SELECT a.id FROM parent_table a LEFT JOIN child_table b ON a.id = b.parent_id WHERE b.parent_id IS NULL;",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "What are the current system variables related to query performance?",
+        "sql": "SHOW VARIABLES LIKE '%query_cache%'; SHOW VARIABLES LIKE '%max_connections%';",
+        "question_type": "troubleshoot"
+      },
+      {
+        "question": "How can I see the list of all users and their privileges?",
+        "sql": "SELECT user, host FROM mysql.user; SHOW GRANTS FOR 'user'@'host';",
+        "question_type": "troubleshoot"
+      }
+    ]
+  },
+  {
+    "database_name": "school",
+    "table_name": "students",
+    "schema": "CREATE TABLE `students` (\n  `student_id` INT NOT NULL AUTO_INCREMENT,\n  `first_name` VARCHAR(50) NOT NULL,\n  `last_name` VARCHAR(50) NOT NULL,\n  `date_of_birth` DATE NOT NULL,\n  `gender` ENUM('M', 'F') NOT NULL,\n  `grade_level` INT NOT NULL,\n  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`student_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+    "question_sql_pairs": [
+      {
+        "question": "Who is the top student in the school?",
+        "sql": "SELECT first_name, last_name FROM students ORDER BY grade_level DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What are the names of all students?",
+        "sql": "SELECT first_name, last_name FROM students;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "How many students are there in each grade level?",
+        "sql": "SELECT grade_level, COUNT(*) FROM students GROUP BY grade_level;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the average grade level of students?",
+        "sql": "SELECT AVG(grade_level) FROM students;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the distribution of students by gender?",
+        "sql": "SELECT gender, COUNT(*) FROM students GROUP BY gender;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Who was the latest student added to the database?",
+        "sql": "SELECT first_name, last_name FROM students ORDER BY created_at DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Add a new student named John Doe who is in grade 10.",
+        "sql": "INSERT INTO students (first_name, last_name, date_of_birth, gender, grade_level) VALUES ('John', 'Doe', '2005-05-15', 'M', 10);",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Change the grade level of student ID 1 to 11.",
+        "sql": "UPDATE students SET grade_level = 11 WHERE student_id = 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Remove the student with ID 1 from the database.",
+        "sql": "DELETE FROM students WHERE student_id = 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Which students have birthdays today?",
+        "sql": "SELECT first_name, last_name FROM students WHERE DATE(date_of_birth) = DATE(NOW());",
+        "question_type": "analytics"
+      },
+      {
+        "question": "How many students have a last name that starts with 'S'?",
+        "sql": "SELECT COUNT(*) FROM students WHERE last_name LIKE 'S%';",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the youngest student's date of birth?",
+        "sql": "SELECT MIN(date_of_birth) FROM students;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the oldest student's date of birth?",
+        "sql": "SELECT MAX(date_of_birth) FROM students;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Find students in grade level 12.",
+        "sql": "SELECT first_name, last_name FROM students WHERE grade_level = 12;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "How many male students are in grade 10?",
+        "sql": "SELECT COUNT(*) FROM students WHERE gender = 'M' AND grade_level = 10;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What are the full names of all female students?",
+        "sql": "SELECT CONCAT(first_name, ' ', last_name) AS full_name FROM students WHERE gender = 'F';",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Which student was updated most recently?",
+        "sql": "SELECT first_name, last_name FROM students ORDER BY updated_at DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the grade level of the student with student_id 5?",
+        "sql": "SELECT grade_level FROM students WHERE student_id = 5;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "List all students sorted by their last name.",
+        "sql": "SELECT first_name, last_name FROM students ORDER BY last_name;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Find all students who were added to the database in the last month.",
+        "sql": "SELECT first_name, last_name FROM students WHERE created_at > NOW() - INTERVAL 1 MONTH;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Which students have enrolled in courses from the 'Math' department and what are their details?",
+        "sql": "SELECT s.first_name, s.last_name, c.course_name FROM students s JOIN enrollments e ON s.student_id = e.student_id JOIN courses c ON e.course_id = c.course_id WHERE c.department = 'Math';",
+        "question_type": "analytics"
+      }
+    ]
+  },
+  {
+    "database_name": "school",
+    "table_name": "courses",
+    "schema": "CREATE TABLE `courses` (\n  `course_id` INT NOT NULL AUTO_INCREMENT,\n  `course_name` VARCHAR(100) NOT NULL,\n  `description` TEXT,\n  `credits` INT NOT NULL,\n  `department` VARCHAR(100),\n  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`course_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+    "question_sql_pairs": [
+      {
+        "question": "List all available courses.",
+        "sql": "SELECT course_name, description FROM courses;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What are the details of the course with course_id 2?",
+        "sql": "SELECT * FROM courses WHERE course_id = 2;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "How many courses are there in total?",
+        "sql": "SELECT COUNT(*) FROM courses;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Add a new course named 'Advanced Mathematics' with 4 credits.",
+        "sql": "INSERT INTO courses (course_name, description, credits) VALUES ('Advanced Mathematics', 'An in-depth course on advanced mathematical concepts.', 4);",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Change the description of the course with ID 2.",
+        "sql": "UPDATE courses SET description = 'Updated description' WHERE course_id = 2;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Remove the course with ID 3 from the database.",
+        "sql": "DELETE FROM courses WHERE course_id = 3;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the course with the highest credits?",
+        "sql": "SELECT course_name FROM courses ORDER BY credits DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Find all courses with more than 3 credits.",
+        "sql": "SELECT course_name FROM courses WHERE credits > 3;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the average number of credits per course?",
+        "sql": "SELECT AVG(credits) FROM courses;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Which course was added most recently?",
+        "sql": "SELECT course_name FROM courses ORDER BY created_at DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "How many courses have the word 'Introduction' in their name?",
+        "sql": "SELECT COUNT(*) FROM courses WHERE course_name LIKE '%Introduction%';",
+        "question_type": "analytics"
+      },
+      {
+        "question": "List courses sorted by their creation date.",
+        "sql": "SELECT course_name FROM courses ORDER BY created_at;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Find all courses with the word 'Science' in the description.",
+        "sql": "SELECT course_name FROM courses WHERE description LIKE '%Science%';",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What are the details of the course named 'Physics'?",
+        "sql": "SELECT * FROM courses WHERE course_name = 'Physics';",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Which course has the longest description?",
+        "sql": "SELECT course_name FROM courses ORDER BY LENGTH(description) DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the total number of credits for all courses?",
+        "sql": "SELECT SUM(credits) FROM courses;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Find the course that was updated most recently.",
+        "sql": "SELECT course_name FROM courses ORDER BY updated_at DESC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What is the shortest course name?",
+        "sql": "SELECT course_name FROM courses ORDER BY LENGTH(course_name) ASC LIMIT 1;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "List all courses that were added in the last year.",
+        "sql": "SELECT course_name FROM courses WHERE created_at > NOW() - INTERVAL 1 YEAR;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "What are the names of courses that have exactly 3 credits?",
+        "sql": "SELECT course_name FROM courses WHERE credits = 3;",
+        "question_type": "analytics"
+      },
+      {
+        "question": "Which students are enrolled in courses offered by the 'Science' department and what are the course details?",
+        "sql": "SELECT s.first_name, s.last_name, c.course_name FROM students s JOIN enrollments e ON s.student_id = e.student_id JOIN courses c ON e.course_id = c.course_id WHERE c.department = 'Science';",
+        "question_type": "analytics"
+      }
+    ]
+  },
+  {
+    "database_name": "ecommerce_db",
+    "table_name": "orders",
+    "schema": "CREATE TABLE `orders` (\n  `order_id` INT NOT NULL AUTO_INCREMENT,\n  `customer_id` INT NOT NULL,\n  `order_date` DATETIME NOT NULL,\n  `status` ENUM('Pending', 'Shipped', 'Delivered', 'Cancelled') NOT NULL,\n  `total_amount` DECIMAL(10, 2) NOT NULL,\n  `shipping_address` VARCHAR(255) NOT NULL,\n  `payment_method` ENUM('Credit Card', 'PayPal', 'Bank Transfer') NOT NULL,\n  PRIMARY KEY (`order_id`),\n  FOREIGN KEY (`customer_id`) REFERENCES customers(`customer_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+    "question_sql_pairs": [
+      {
+        "question_type": "analytics",
+        "question": "What is the total revenue for orders placed in the last month?",
+        "sql": "SELECT SUM(total_amount) FROM orders WHERE order_date > NOW() - INTERVAL 1 MONTH;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which customers have placed more than 5 orders?",
+        "sql": "SELECT c.first_name, c.last_name, COUNT(o.order_id) AS order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id HAVING COUNT(o.order_id) > 5;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List all orders that are either 'Shipped' or 'Delivered' and have a total amount greater than $100.",
+        "sql": "SELECT * FROM orders WHERE status IN ('Shipped', 'Delivered') AND total_amount > 100;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find the most recent order for each customer.",
+        "sql": "SELECT customer_id, MAX(order_date) AS last_order_date FROM orders GROUP BY customer_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which payment method is most commonly used?",
+        "sql": "SELECT payment_method, COUNT(*) AS usage_count FROM orders GROUP BY payment_method ORDER BY usage_count DESC LIMIT 1;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "How many orders have been cancelled this year?",
+        "sql": "SELECT COUNT(*) FROM orders WHERE status = 'Cancelled' AND YEAR(order_date) = YEAR(CURDATE());"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List customers who have ordered more than once in the last 30 days and include their total spending.",
+        "sql": "SELECT c.first_name, c.last_name, SUM(o.total_amount) AS total_spent FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_date > NOW() - INTERVAL 30 DAY GROUP BY c.customer_id HAVING COUNT(o.order_id) > 1;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find orders with a total amount above the average total amount for all orders.",
+        "sql": "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which customers placed orders on the same day as their birthdays?",
+        "sql": "SELECT c.first_name, c.last_name, o.order_date FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE DATE(o.order_date) = DATE(c.date_of_birth);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List orders that were placed on weekends.",
+        "sql": "SELECT * FROM orders WHERE DAYOFWEEK(order_date) IN (1, 7);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Get the top 5 most expensive orders.",
+        "sql": "SELECT * FROM orders ORDER BY total_amount DESC LIMIT 5;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "How many orders were placed each day in the last week?",
+        "sql": "SELECT DATE(order_date) AS order_day, COUNT(*) AS order_count FROM orders WHERE order_date > NOW() - INTERVAL 1 WEEK GROUP BY DATE(order_date);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the average order amount for each payment method?",
+        "sql": "SELECT payment_method, AVG(total_amount) AS average_amount FROM orders GROUP BY payment_method;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find all orders where the total amount is greater than the average order amount for orders placed in 'Shipped' status.",
+        "sql": "SELECT * FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders WHERE status = 'Shipped');"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which customers have spent the most on orders, and what are their total expenditures?",
+        "sql": "SELECT c.first_name, c.last_name, SUM(o.total_amount) AS total_expenditure FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id ORDER BY total_expenditure DESC LIMIT 10;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the percentage of orders with 'Pending' status compared to the total number of orders?",
+        "sql": "SELECT (COUNT(*) / (SELECT COUNT(*) FROM orders) * 100) AS pending_percentage FROM orders WHERE status = 'Pending';"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find orders with total amount greater than $200 that were shipped to a specific address.",
+        "sql": "SELECT * FROM orders WHERE total_amount > 200 AND shipping_address = '123 Elm Street';"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Retrieve orders along with customer names for orders that exceed $150 and were made in the last 60 days.",
+        "sql": "SELECT o.order_id, c.first_name, c.last_name, o.total_amount FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE o.total_amount > 150 AND o.order_date > NOW() - INTERVAL 60 DAY;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What are the top 3 most recent orders with the highest total amount?",
+        "sql": "SELECT * FROM orders ORDER BY order_date DESC, total_amount DESC LIMIT 3;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find the average amount spent per order by each customer.",
+        "sql": "SELECT customer_id, AVG(total_amount) AS average_spent FROM orders GROUP BY customer_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which customers have not placed any orders in the past year?",
+        "sql": "SELECT first_name, last_name FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders WHERE order_date > NOW() - INTERVAL 1 YEAR);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the most popular shipping address used by customers?",
+        "sql": "SELECT shipping_address, COUNT(*) AS address_count FROM orders GROUP BY shipping_address ORDER BY address_count DESC LIMIT 1;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which customers have a higher than average number of orders and what are their total orders?",
+        "sql": "SELECT c.first_name, c.last_name, COUNT(o.order_id) AS order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id HAVING COUNT(o.order_id) > (SELECT AVG(order_count) FROM (SELECT customer_id, COUNT(order_id) AS order_count FROM orders GROUP BY customer_id) AS subquery);"
+      }
+    ]
+  },
+  {
+    "database_name": "hr_db",
+    "table_name": "employees",
+    "schema": "CREATE TABLE `employees` (\n  `employee_id` INT NOT NULL AUTO_INCREMENT,\n  `first_name` VARCHAR(50) NOT NULL,\n  `last_name` VARCHAR(50) NOT NULL,\n  `hire_date` DATE NOT NULL,\n  `department_id` INT NOT NULL,\n  `salary` DECIMAL(10, 2) NOT NULL,\n  `manager_id` INT,\n  PRIMARY KEY (`employee_id`),\n  FOREIGN KEY (`department_id`) REFERENCES departments(`department_id`),\n  FOREIGN KEY (`manager_id`) REFERENCES employees(`employee_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+    "question_sql_pairs": [
+      {
+        "question_type": "analytics",
+        "question": "Who are the highest-paid employees in each department?",
+        "sql": "SELECT department_id, first_name, last_name, MAX(salary) AS highest_salary FROM employees GROUP BY department_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find the employees who have been hired in the last 6 months and their department names.",
+        "sql": "SELECT e.first_name, e.last_name, d.department_name FROM employees e JOIN departments d ON e.department_id = d.department_id WHERE e.hire_date > NOW() - INTERVAL 6 MONTH;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the average salary of employees in each department?",
+        "sql": "SELECT department_id, AVG(salary) AS average_salary FROM employees GROUP BY department_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List employees who have managers and their corresponding managers.",
+        "sql": "SELECT e1.first_name AS employee_name, e2.first_name AS manager_name FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.employee_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find departments with more than 10 employees and the average salary in those departments.",
+        "sql": "SELECT department_id, AVG(salary) AS average_salary FROM employees GROUP BY department_id HAVING COUNT(employee_id) > 10;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the total salary expenditure for each department?",
+        "sql": "SELECT department_id, SUM(salary) AS total_salary FROM employees GROUP BY department_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Retrieve the list of employees who do not have a manager.",
+        "sql": "SELECT first_name, last_name FROM employees WHERE manager_id IS NULL;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which employees were hired in the same month and year as their manager?",
+        "sql": "SELECT e1.first_name AS employee_name, e2.first_name AS manager_name FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.employee_id WHERE MONTH(e1.hire_date) = MONTH(e2.hire_date) AND YEAR(e1.hire_date) = YEAR(e2.hire_date);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Get the list of employees who have the same first name as their manager.",
+        "sql": "SELECT e1.first_name, e1.last_name FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.employee_id WHERE e1.first_name = e2.first_name;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find the average salary of employees who have been hired in the last year.",
+        "sql": "SELECT AVG(salary) AS average_salary FROM employees WHERE hire_date > NOW() - INTERVAL 1 YEAR;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the percentage of employees earning above the average salary?",
+        "sql": "SELECT (COUNT(*) / (SELECT COUNT(*) FROM employees) * 100) AS percentage_above_average FROM employees WHERE salary > (SELECT AVG(salary) FROM employees);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List employees who have been working for more than 5 years and their respective departments.",
+        "sql": "SELECT e.first_name, e.last_name, d.department_name FROM employees e JOIN departments d ON e.department_id = d.department_id WHERE e.hire_date < NOW() - INTERVAL 5 YEAR;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find the highest-paid employees who have been hired in the last 2 years.",
+        "sql": "SELECT first_name, last_name, salary FROM employees WHERE hire_date > NOW() - INTERVAL 2 YEAR ORDER BY salary DESC LIMIT 5;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Retrieve the names of employees who earn above the 75th percentile salary.",
+        "sql": "SELECT first_name, last_name FROM employees WHERE salary > (SELECT PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY salary) FROM employees);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which departments have the highest average employee tenure?",
+        "sql": "SELECT department_id, AVG(DATEDIFF(NOW(), hire_date)) AS average_tenure FROM employees GROUP BY department_id ORDER BY average_tenure DESC LIMIT 5;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List the top 3 longest-tenured employees and their hire dates.",
+        "sql": "SELECT first_name, last_name, hire_date FROM employees ORDER BY hire_date ASC LIMIT 3;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "What is the total number of employees in each department?",
+        "sql": "SELECT department_id, COUNT(*) AS total_employees FROM employees GROUP BY department_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Find the names and salaries of employees who earn less than the average salary in their department.",
+        "sql": "SELECT e.first_name, e.last_name, e.salary FROM employees e JOIN (SELECT department_id, AVG(salary) AS average_salary FROM employees GROUP BY department_id) avg_salaries ON e.department_id = avg_salaries.department_id WHERE e.salary < avg_salaries.average_salary;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "List employees who have the same last name as their manager.",
+        "sql": "SELECT e1.first_name, e1.last_name FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.employee_id WHERE e1.last_name = e2.last_name;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which employees have a salary within 10% of their manager's salary?",
+        "sql": "SELECT e1.first_name, e1.last_name, e1.salary AS employee_salary, e2.salary AS manager_salary FROM employees e1 JOIN employees e2 ON e1.manager_id = e2.employee_id WHERE ABS(e1.salary - e2.salary) <= (e2.salary * 0.1);"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Get the list of departments and the number of employees in each, including those with zero employees.",
+        "sql": "SELECT d.department_name, COUNT(e.employee_id) AS total_employees FROM departments d LEFT JOIN employees e ON d.department_id = e.department_id GROUP BY d.department_id;"
+      },
+      {
+        "question_type": "analytics",
+        "question": "Which employees have worked in more than one department?",
+        "sql": "SELECT e.first_name, e.last_name, COUNT(ed.department_id) AS department_count FROM employees e JOIN employee_departments ed ON e.employee_id = ed.employee_id GROUP BY e.employee_id HAVING COUNT(ed.department_id) > 1;"
+      }
+    ]
+  }
+]
