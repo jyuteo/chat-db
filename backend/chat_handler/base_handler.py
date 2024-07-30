@@ -82,3 +82,7 @@ class ChatHandler(ABC):
         to generate natural language answer.
         """
         pass
+
+    @abstractmethod
+    def answer_user_question(self, question: str, *args, **kwargs) -> str:
+        pass
