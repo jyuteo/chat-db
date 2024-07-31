@@ -20,8 +20,8 @@ class MySQLConnConfig(DBConnConfig):
 
 
 class MySQLQueries:
-    GET_TABLES_IN_DATABASE = """ 
-        SELECT table_name FROM information_schema.tables 
+    GET_TABLES_IN_DATABASE = """
+        SELECT table_name FROM information_schema.tables
         WHERE table_schema = '{database}';
     """
 

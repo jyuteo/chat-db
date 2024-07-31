@@ -87,10 +87,11 @@ class MySQLChatHandler(ChatHandler):
         pass
 
     def answer_user_question(self, question: str, *args, **kwargs) -> str:
-        logger.info(f"Received user question: {question}")
-        prompt = self.generate_prompt_to_get_sql(question)
-        print(prompt)
-        logger.info(f"Generated prompt to get sql: {prompt}")
+        # logger.info(f"Received user question: {question}")
+        # prompt = self.generate_prompt_to_get_sql(question)
+        # print(prompt)
+        # logger.info(f"Generated prompt to get sql: {prompt}")
         # response = self.submit_prompt(prompt)
         # logger.info(f"Response from LLM: {response}")
         # return response
+        return question
