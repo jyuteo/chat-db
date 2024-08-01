@@ -53,7 +53,7 @@ def main(
                     table_schema=schema,
                     table_schema_embedding=embedding_model.get_embedding(schema),
                 )
-                vector_store_handler.insert_db_table_info([db_table_info])
+                vector_store_handler.insert_db_table_info(db_table_info)
 
             question_sql_pair_list = list()
             for question_sql_pair in question_sql_pairs:

@@ -28,7 +28,7 @@ class PromptToGetSQLAnswer:
     QUESTION_SQL_PAIRS_FOR_TABLE = """
         Here are some examples of sql that should be generated given the question for a table with schema {table_schema}:
         {question_sql_pairs}
-    """
+    """  # noqa: E501 line too long
 
     QUESTION_SQL_PAIR = """
         Question: {question}
@@ -52,7 +52,7 @@ class PromptToGetNaturalLanguageAnswer:
             1. The response should be strictly in this response format: Response(sql='your_generated_sql', message='any explanation about your response'). Since you are not supposed to generate sql for this time, leave sql field empty. Example: Response(sql='', message='you answer to the question')
             2. If the provided context is not enough to answer the question, provide response to explain why. Example: Response(sql='', message='your explanation')
             3. If the question is not related to the database, provide response to explain why. Example: Response(sql='', message='I am chat bot that answers questions related to databases. Your question seems to be not relevant.')
-    """
+    """  # noqa: E501 line too long
 
     SQL_DATA_PAIR = """
         I have executed this SQL: {sql} and the output data is:

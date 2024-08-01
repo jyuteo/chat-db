@@ -1,9 +1,7 @@
 import traceback
-from typing import Dict
-from flask import Blueprint, session, jsonify, request
+from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 
-from db_client import DBType
 from embedding_models import (
     EmbeddingModelType,
     SentenceTransformerEmbeddingModelConfig,
@@ -108,7 +106,7 @@ def add_question_sql_pairs():
             if ("database_name" in data and "table_name" not in data) or (
                 "table_name" in data and "database_name" not in data
             ):
-                e = ValueError(f"Field database_name and table_name must be provided together")
+                e = ValueError("Field database_name and table_name must be provided together")
                 return jsonify({"error": str(e)}), 400
 
             database_name, table_name = None, None
@@ -118,8 +116,8 @@ def add_question_sql_pairs():
                     database_name, table_name
                 ):
                     e = ValueError(
-                        f"Table schema for database_name and table_name provided does not exists. Please add the schema with /knowledge_base/add_db_table_schemas first."
-                    )  # noqa: E501 line too long
+                        "Table schema for database_name and table_name provided does not exists. Please add the schema with /knowledge_base/add_db_table_schemas first."  # noqa: E501 line too long
+                    )
                     return jsonify({"error": str(e)}), 400
 
             question_sql_list.append(

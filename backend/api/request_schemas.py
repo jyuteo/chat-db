@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, ValidationError
 
+from embedding_models import EmbeddingModelType
 from vector_store import VectorStoreType
 from llm import LLMType
 from db_client import DBType
@@ -61,14 +62,14 @@ class QuestionSQLSchema(Schema):
 
 
 class AddDBTableInfoSchema(Schema):
-    db_type = fields.String(required=True)
-    embedding_model_type = fields.String(required=True)
-    vector_store_type = fields.String(required=True)
+    db_type = fields.String(required=True, validate=validate_enum(DBType))
+    embedding_model_type = fields.String(required=True, validate=validate_enum(EmbeddingModelType))
+    vector_store_type = fields.String(required=True, validate=validate_enum(VectorStoreType))
     data = fields.List(fields.Nested(DBTableInfoSchema), required=True)
 
 
 class AddQuestionSQLPairsSchema(Schema):
-    db_type = fields.String(required=True)
-    embedding_model_type = fields.String(required=True)
-    vector_store_type = fields.String(required=True)
+    db_type = fields.String(required=True, validate=validate_enum(DBType))
+    embedding_model_type = fields.String(required=True, validate=validate_enum(EmbeddingModelType))
+    vector_store_type = fields.String(required=True, validate=validate_enum(VectorStoreType))
     data = fields.List(fields.Nested(QuestionSQLSchema), required=True)
