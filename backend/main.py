@@ -6,7 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_session import Session
 
-from api import db, chat
+from api import db, chat, knowledge_base
 
 dotenv.load_dotenv()
 
@@ -25,6 +25,7 @@ def init_app():
 
     app.register_blueprint(db)
     app.register_blueprint(chat)
+    app.register_blueprint(knowledge_base)
 
     return app
 

@@ -33,6 +33,7 @@ def create_db_table_info_model(
                 "table_name",
                 name="uk_database_name_table_name",
             ),
+            {"extend_existing": True},
         )
 
     return DBTableInfoModel

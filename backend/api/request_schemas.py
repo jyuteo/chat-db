@@ -44,3 +44,31 @@ class CreateChatSessionSchema(Schema):
 
 class SendMessageSchema(Schema):
     question = fields.String(required=True)
+
+
+class DBTableInfoSchema(Schema):
+    database_name = fields.String(required=True)
+    table_name = fields.String(required=True)
+    table_schema = fields.String(required=True)
+
+
+class QuestionSQLSchema(Schema):
+    database_name = fields.String(required=False)
+    table_name = fields.String(required=False)
+    question = fields.String(required=True)
+    sql = fields.String(required=True)
+    metadatas = fields.Dict(required=False)
+
+
+class AddDBTableInfoSchema(Schema):
+    db_type = fields.String(required=True)
+    embedding_model_type = fields.String(required=True)
+    vector_store_type = fields.String(required=True)
+    data = fields.List(fields.Nested(DBTableInfoSchema), required=True)
+
+
+class AddQuestionSQLPairsSchema(Schema):
+    db_type = fields.String(required=True)
+    embedding_model_type = fields.String(required=True)
+    vector_store_type = fields.String(required=True)
+    data = fields.List(fields.Nested(QuestionSQLSchema), required=True)
