@@ -43,10 +43,10 @@ class TiDBVectorStoreHandler(VectorStoreHandler):
         self.sessionmaker = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
 
         self.DBTableInfoModel = create_db_table_info_model(
-            config.db_type, config.embedding_model_name, config.embedding_model_dim
+            config.db_type, config.embedding_model_type, config.embedding_model_name, config.embedding_model_dim
         )
         self.QuestionSQLModel = create_question_sql_model(
-            config.db_type, config.embedding_model_name, config.embedding_model_dim
+            config.db_type, config.embedding_model_type, config.embedding_model_name, config.embedding_model_dim
         )
 
         if config.reset_db:
@@ -62,9 +62,7 @@ class TiDBVectorStoreHandler(VectorStoreHandler):
                 db.add(self.DBTableInfoModel(**asdict(d)))
             db.commit()
 
-    def get_db_table_info_by_database_name_and_table_name(
-        self, database_name: str, table_name: str
-    ) -> List[DBTableInfo]:
+    def get_db_table_info_by_database_name_and_table_name(self, database_name: str, table_name: str) -> DBTableInfo:
         with self.sessionmaker() as db:
             data = (
                 db.query(self.DBTableInfoModel)
@@ -76,10 +74,11 @@ class TiDBVectorStoreHandler(VectorStoreHandler):
         result = []
         for d in data:
             result.append(convert_sqlalchemy_model_to_dataclass(d, DBTableInfo))
-        return result
+        assert len(result) <= 1
+        return result[0] if result else None
 
     def get_top_k_similar_db_table_info_with_table_schema_embedding(
-        self, query_embedding: List[float], k: int = 3, min_similarity: float = 0.8
+        self, query_embedding: List[float], k: int = 3, min_similarity: float = 0.7
     ) -> List[Tuple[DBTableInfo, float]]:
         max_distance = 1 - min_similarity
         with self.sessionmaker() as db:

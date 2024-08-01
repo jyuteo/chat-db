@@ -13,8 +13,8 @@ python-dotenv==1.0.0
 redis
 sentence-transformers==3.0.1
 SQLAlchemy==2.0.30
+sqlparse==0.5.1
 tidb-vector==0.0.9
-tiktoken
 
 
 

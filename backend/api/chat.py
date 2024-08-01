@@ -8,7 +8,7 @@ from embedding_models import EmbeddingModelType, SentenceTransformerEmbeddingMod
 from vector_store import VectorStoreType
 from db_client import DBType, MySQLConnConfig
 from llm import LLMType, GeminiLLMClientConfig
-from chat_handler import ChatHandler, MySQLChatHandler
+from chat_handler import ChatHandler, MySQLChatHandler, ChatResponse
 from api.request_schemas import CreateChatSessionSchema, SendMessageSchema
 
 chat = Blueprint("chat", __name__, url_prefix="/chat")
@@ -56,6 +56,7 @@ def create_chat_session():
         session["chat_session_id"] = chat_session_id
 
     try:
+        chat_handler = None
         if db["type"] == DBType.MYSQL:
             chat_handler = MySQLChatHandler(
                 embedding_model_type=EmbeddingModelType(embedding_model_type),
@@ -64,8 +65,9 @@ def create_chat_session():
                 llm_type=LLMType(llm["type"]),
                 llm_client_config=llm_config,
                 db_conn_config=db_config,
+                chat_session_id=chat_session_id,
             )
-            CHAT_SESSION_CACHE[chat_session_id] = chat_handler
+        CHAT_SESSION_CACHE[chat_session_id] = chat_handler
         return jsonify({"message": "Chat handler init successfully."}), 200
     except Exception as e:
         print(traceback.format_exc())
@@ -88,7 +90,12 @@ def send_message():
         chat_handler: ChatHandler = CHAT_SESSION_CACHE.get(chat_session_id, None)
         if not chat_handler:
             return jsonify({"error": "Chat handler not initialized for this client."}), 400
-        result = chat_handler.answer_user_question(data["question"])
+        chat_response: ChatResponse = chat_handler.answer_user_question(data["question"])
+        result = {
+            "sql": chat_response.sql,
+            "message": chat_response.message,
+            "natural_language_answer": chat_response.natural_language_answer,
+        }
         return jsonify({"result": result}), 200
     except Exception as e:
         print(traceback.format_exc())

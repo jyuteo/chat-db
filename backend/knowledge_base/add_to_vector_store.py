@@ -29,6 +29,7 @@ def main(
     if vector_store_type == VectorStoreType.TIDB:
         vector_store_config = TiDBVectorStoreConfig(
             db_type=db_type,
+            embedding_model_type=embedding_model_type,
             embedding_model_name=embedding_model.model_name,
             embedding_model_dim=embedding_model.embedding_dim,
         )
@@ -43,24 +44,29 @@ def main(
             database = group["database_name"]
             table = group["table_name"]
             schema = group["schema"]
+            question_sql_pairs = group["question_sql_pairs"]
 
             if database and table and schema:
                 db_table_info = DBTableInfo(
-                    database=database,
-                    table=table,
-                    schema=schema,
-                    schema_embedding=embedding_model.get_embedding(schema),
+                    database_name=database,
+                    table_name=table,
+                    table_schema=schema,
+                    table_schema_embedding=embedding_model.get_embedding(schema),
                 )
-                vector_store_handler.add_db_table_info(db_table_info)
+                vector_store_handler.insert_db_table_info([db_table_info])
 
-            question_sql_pairs = group["question_sql_pairs"]
+            question_sql_pair_list = list()
             for question_sql_pair in question_sql_pairs:
                 question_sql = QuestionSQL(
+                    database_name=database if database else None,
+                    table_name=table if table else None,
                     question=question_sql_pair["question"],
-                    sql=question_sql_pair["sql"],
                     question_embedding=embedding_model.get_embedding(question_sql_pair["question"]),
+                    sql=question_sql_pair["sql"],
+                    metadatas={"question_type": question_sql_pair["question_type"]},
                 )
-                vector_store_handler.add_question_sql(question_sql)
+                question_sql_pair_list.append(question_sql)
+            vector_store_handler.insert_question_sql_pairs(question_sql_pair_list)
 
 
 if __name__ == "__main__":

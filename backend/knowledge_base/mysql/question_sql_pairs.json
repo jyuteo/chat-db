@@ -531,7 +531,7 @@
     ]
   },
   {
-    "database_name": "ecommerce_db",
+    "database_name": "ecommerce",
     "table_name": "orders",
     "schema": "CREATE TABLE `orders` (\n  `order_id` INT NOT NULL AUTO_INCREMENT,\n  `customer_id` INT NOT NULL,\n  `order_date` DATETIME NOT NULL,\n  `status` ENUM('Pending', 'Shipped', 'Delivered', 'Cancelled') NOT NULL,\n  `total_amount` DECIMAL(10, 2) NOT NULL,\n  `shipping_address` VARCHAR(255) NOT NULL,\n  `payment_method` ENUM('Credit Card', 'PayPal', 'Bank Transfer') NOT NULL,\n  PRIMARY KEY (`order_id`),\n  FOREIGN KEY (`customer_id`) REFERENCES customers(`customer_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
     "question_sql_pairs": [
@@ -653,7 +653,7 @@
     ]
   },
   {
-    "database_name": "hr_db",
+    "database_name": "hr",
     "table_name": "employees",
     "schema": "CREATE TABLE `employees` (\n  `employee_id` INT NOT NULL AUTO_INCREMENT,\n  `first_name` VARCHAR(50) NOT NULL,\n  `last_name` VARCHAR(50) NOT NULL,\n  `hire_date` DATE NOT NULL,\n  `department_id` INT NOT NULL,\n  `salary` DECIMAL(10, 2) NOT NULL,\n  `manager_id` INT,\n  PRIMARY KEY (`employee_id`),\n  FOREIGN KEY (`department_id`) REFERENCES departments(`department_id`),\n  FOREIGN KEY (`manager_id`) REFERENCES employees(`employee_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
     "question_sql_pairs": [

@@ -1,6 +1,6 @@
 import os
 import dotenv
-import dill
+import pickle
 import redis
 
 from cache.redis import RedisConnConfig
@@ -25,11 +25,11 @@ class ChatSessionCache:
         )
 
     def cache(self, session_id: str, instance: ChatHandler, ttl=3600):
-        serialized_instance = dill.dumps(instance)
+        serialized_instance = pickle.dumps(instance)
         self.redis_client.setex(self.CHAT_SESSION_KEY_FORMAT.format(session_id=session_id), ttl, serialized_instance)
 
     def get(self, session_id: str):
         serialized_instance = self.redis_client.get(self.CHAT_SESSION_KEY_FORMAT.format(session_id=session_id))
         if serialized_instance:
-            return dill.loads(serialized_instance)
+            return pickle.loads(serialized_instance)
         return None

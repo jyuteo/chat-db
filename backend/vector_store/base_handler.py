@@ -3,8 +3,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Tuple, Dict
 
-from db_client import DBType
-
 
 @dataclass
 class DBTableInfo:
@@ -32,7 +30,8 @@ class QuestionSQL:
 
 @dataclass
 class VectorStoreConfig:
-    db_type: DBType = None
+    db_type: str = None
+    embedding_model_type: str = None
     embedding_model_name: str = None
     embedding_model_dim: int = None
 
@@ -43,9 +42,7 @@ class VectorStoreHandler(ABC):
         pass
 
     @abstractmethod
-    def get_db_table_info_by_database_name_and_table_name(
-        self, database_name: str, table_name: str
-    ) -> List[DBTableInfo]:
+    def get_db_table_info_by_database_name_and_table_name(self, database_name: str, table_name: str) -> DBTableInfo:
         pass
 
     @abstractmethod
@@ -60,4 +57,14 @@ class VectorStoreHandler(ABC):
         min_similarity: float = 0.8,
         filters: Dict = None,
     ) -> List[Tuple[QuestionSQL, float]]:
+        pass
+
+    @abstractmethod
+    def get_top_k_similar_db_table_info_with_table_schema_embedding(
+        self,
+        table_schema_embedding: List[float],
+        k: int = 3,
+        min_similarity: float = 0.8,
+        filters: Dict = None,
+    ) -> List[Tuple[DBTableInfo, float]]:
         pass
