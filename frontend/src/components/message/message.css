@@ -1,0 +1,62 @@
+.message-display {
+  margin-bottom: 1rem;
+}
+
+.message-content {
+  margin-bottom: 0.5rem;
+}
+
+.message-content-greyed {
+  color: #444;
+  font-style: italic;
+}
+
+.sql-content {
+  margin-bottom: 0.5rem;
+}
+
+.sql-content h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.sql-content pre {
+  background: #333;
+  color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #333;
+}
+
+.table-container th,
+.table-container td {
+  border: 1px solid #444;
+  padding: 0.5rem;
+  text-align: left;
+  color: #fff;
+}
+
+.table-container th {
+  background-color: #555;
+  color: #ddd;
+}
+
+.table-container td {
+  background-color: #444;
+}
+
+.table-container tr:nth-child(even) {
+  background-color: #3a3a3a;
+}
+
+.natural-language-answer {
+  margin-top: 1rem;
+}

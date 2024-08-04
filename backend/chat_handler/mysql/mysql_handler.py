@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Dict
+from typing import Dict, Tuple, List
 
 import sqlparse
 from chat_handler import ChatHandler, ChatResponse, PromptToGetNaturalLanguageAnswer, PromptToGetSQLAnswer
@@ -23,6 +23,7 @@ class MySQLChatHandler(ChatHandler):
         llm_client_config: LLMClientConfig,
         db_conn_config: MySQLConnConfig,
         chat_session_id: str = "",
+        vector_store_visible_owners: List[str] = ["public"],
     ):
         super().__init__(
             embedding_model_type=embedding_model_type,
@@ -30,6 +31,7 @@ class MySQLChatHandler(ChatHandler):
             llm_type=llm_type,
             db_type=DBType.MYSQL,
             chat_session_id=chat_session_id,
+            vector_store_visible_owners=vector_store_visible_owners,
         )
         self.embedding_model: EmbeddingModel = self.init_embedding_model(embedding_model_config=embedding_model_config)
 
@@ -61,7 +63,7 @@ class MySQLChatHandler(ChatHandler):
         for _, table_schema in self.table_schemas_in_db.items():
             table_schema_embedding = self.embedding_model.get_embedding(table_schema)
             similar_db_table_info = self.vector_store.get_top_k_similar_db_table_info_with_table_schema_embedding(
-                table_schema_embedding, k=2
+                table_schema_embedding, k=2, min_similarity=0.6, filters={"owners": self.vector_store_visible_owners}
             )
             for db_table, _ in similar_db_table_info:
                 similar_db_table_schemas[(db_table.database_name, db_table.table_name)] = db_table.table_schema
@@ -74,7 +76,7 @@ class MySQLChatHandler(ChatHandler):
         """
         question_embedding = self.embedding_model.get_embedding(question)
         similar_question_sql_pairs = self.vector_store.get_top_k_similar_question_sql_pairs_with_question_embedding(
-            question_embedding, k=10, min_similarity=0.5
+            question_embedding, k=10, min_similarity=0.5, filters={"owners": self.vector_store_visible_owners}
         )
 
         question_sql_pairs = defaultdict(list)
@@ -106,7 +108,11 @@ class MySQLChatHandler(ChatHandler):
                         question_embedding,
                         k=5,
                         min_similarity=0.3,
-                        filters={"database_name": db_name, "table_name": table_name},
+                        filters={
+                            "database_name": db_name,
+                            "table_name": table_name,
+                            "owners": self.vector_store_visible_owners,
+                        },
                     )
                 )
                 for pair, _ in similar_question_sql_pairs:
@@ -133,12 +139,16 @@ class MySQLChatHandler(ChatHandler):
         )
         return prompt
 
-    def generate_prompt_to_get_natural_language_answer(self, question: str, data: List[str]) -> str:
+    def generate_prompt_to_get_natural_language_answer(self, question: str, data: Dict) -> str:
         prompt = (
             PromptToGetNaturalLanguageAnswer.INITIAL_PROMPT.format(db_type=self.db_type)
             + "\n"
             + "\n".join(
-                [PromptToGetNaturalLanguageAnswer.SQL_DATA_PAIR.format(sql=s, data=d) for s, d in data if d is not None]
+                [
+                    PromptToGetNaturalLanguageAnswer.SQL_DATA_PAIR.format(sql=s, data=d)
+                    for s, d in data.items()
+                    if d is not None
+                ]
             )
             + "\n"
             + PromptToGetNaturalLanguageAnswer.USER_QUESTION_PROMPT.format(question=question)
@@ -156,34 +166,35 @@ class MySQLChatHandler(ChatHandler):
                         return False
         return True
 
-    def get_natural_language_answer_from_llm(self, question: str, sql_response: ChatResponse) -> str:
+    def get_natural_language_answer_from_llm(self, question: str, sql_response: ChatResponse) -> Tuple[str, Dict]:
         if not self.is_sql_read_only_statement(sql_response.sql):
-            return None
+            return None, None
 
         sqls = sqlparse.parse(sql_response.sql)
-        data = [None] * len(sqls)
-        for i, stmt in enumerate(sqls):
+        sql_data = dict()
+        for stmt in sqls:
             try:
                 result = self.db_client.execute_query(str(stmt))
-                data[i] = result
+                sql_data[str(stmt)] = result
             except Exception as e:
                 self.log_error(f"failed to executed sql from LLM response: {str(stmt)}. error: {e}")
 
-        if all(x is None for x in data):
-            return None
+        if all(x is None for _, x in sql_data.items()):
+            return None, None
         else:
-            prompt = self.generate_prompt_to_get_natural_language_answer(question, zip(sqls, data))
+            prompt = self.generate_prompt_to_get_natural_language_answer(question, sql_data)
             self.log_info(f"Generated prompt to get natural language answer: {prompt}")
             response = self.submit_prompt(prompt)
             self.log_info(f"Got natural language answer from LLM before parsing: {response}")
             natural_language_response = self.parse_sql_and_message_from_llm_response(response)
             self.log_info(f"Got natural language answer from LLM after parsing: {natural_language_response}")
-            return natural_language_response.message
+            return natural_language_response.message, sql_data
 
     def answer_user_question(self, question: str) -> str:
         self.log_info(f"Received question: {question}")
         sql_response = self.get_sql_from_llm(question)
-        natural_language_answer = self.get_natural_language_answer_from_llm(question, sql_response)
+        natural_language_answer, sql_data = self.get_natural_language_answer_from_llm(question, sql_response)
         if natural_language_answer:
             sql_response.natural_language_answer = natural_language_answer
+            sql_response.data = sql_data
         return sql_response

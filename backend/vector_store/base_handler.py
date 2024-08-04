@@ -11,6 +11,7 @@ class DBTableInfo:
     table_name: str = None
     table_schema: str = None
     table_schema_embedding: List[float] = None
+    owner: str = None
     created_at: datetime = None
     updated_at: datetime = None
 
@@ -24,6 +25,7 @@ class QuestionSQL:
     question_embedding: List[float] = None
     sql: str = None
     metadatas: Dict = None
+    owner: str = None
     created_at: datetime = None
     updated_at: datetime = None
 
@@ -67,4 +69,12 @@ class VectorStoreHandler(ABC):
         min_similarity: float = 0.8,
         filters: Dict = None,
     ) -> List[Tuple[DBTableInfo, float]]:
+        pass
+
+    @abstractmethod
+    def get_db_table_info(self, filters: Dict = None) -> List[DBTableInfo]:
+        pass
+
+    @abstractmethod
+    def get_question_sql_pairs(self, filters: Dict = None) -> List[QuestionSQL]:
         pass

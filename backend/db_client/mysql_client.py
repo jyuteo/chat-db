@@ -41,7 +41,10 @@ class MySQLDBClient(DBClient):
 
     def connect(self) -> Engine:
         try:
-            connection_url = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+            if self.password:
+                connection_url = f"mysql+pymysql://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+            else:
+                connection_url = f"mysql+pymysql://{self.user}@{self.host}:{self.port}/{self.database}"
             engine = create_engine(connection_url, pool_pre_ping=True)
             logger.info("Successfully connected to MySQL database")
             return engine
@@ -64,7 +67,7 @@ class MySQLDBClient(DBClient):
     def get_tables_in_database(self) -> List[str]:
         query = MySQLQueries.GET_TABLES_IN_DATABASE.format(database=self.database)
         result = self.execute_query(query)
-        tables = [r["TABLE_NAME"] for r in result]
+        tables = [r["TABLE_NAME"] if "TABLE_NAME" in r else r["table_name"] for r in result]
         return tables
 
     def get_table_schema(self, table_name: str) -> str:

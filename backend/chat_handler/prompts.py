@@ -14,6 +14,7 @@ class PromptToGetSQLAnswer:
             7. If you think multiple sql queries are needed to answer the question, provide all necessary sql concatenated with ';'. Example: Response(sql='sql1;sql2', message='your explanation') Note: Do not provide sql that is not needed to answer the question.
             5. The generated SQL should be valid and executable to {db_type}, without any syntax errors.
             6. The SQL generated should be able to answer the question. You can refer to some example question-sql pairs provided in the message.
+            7. If you think the question might be a follow up to previous question, use the previous question as context and provide your response.
     """  # noqa: E501 line too long
 
     USER_QUESTION_PROMPT = """

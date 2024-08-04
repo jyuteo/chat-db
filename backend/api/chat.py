@@ -10,6 +10,9 @@ from db_client import DBType, MySQLConnConfig
 from llm import LLMType, GeminiLLMClientConfig
 from chat_handler import ChatHandler, MySQLChatHandler, ChatResponse
 from api.request_schemas import CreateChatSessionSchema, SendMessageSchema
+from logger import get_logger
+
+logger = get_logger()
 
 chat = Blueprint("chat", __name__, url_prefix="/chat")
 
@@ -22,7 +25,10 @@ def create_chat_session():
     try:
         data = schema.load(request.json)
     except ValidationError as err:
-        return jsonify({"error:": f"failed to parse request for create_chat_session - {err.messages}"}), 400
+        return (
+            jsonify({"msg:": f"failed to parse request for create_chat_session - {err.messages}", "trace": None}),
+            400,
+        )
 
     llm = data["llm"]
     db = data["db"]
@@ -35,12 +41,13 @@ def create_chat_session():
         db_config = MySQLConnConfig(
             host=db["config"]["host"],
             user=db["config"]["user"],
-            password=db["config"]["password"],
-            database=db["config"]["database"],
+            password=db["config"].get("password", None),
+            database=db["config"].get("database", None),
+            port=db["config"]["port"],
         )
     else:
         e = ValueError(f"Unsupported db type: {db['type']}")
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"msg": str(e), "trace": None}), 400
 
     if llm["type"] == LLMType.GEMINI:
         llm_config = GeminiLLMClientConfig(
@@ -48,15 +55,12 @@ def create_chat_session():
         )
     else:
         e = ValueError(f"Unsupported LLM type: {llm['type']}")
-        return jsonify({"error": str(e)}), 400
-
-    chat_session_id = session.get("chat_session_id", None)
-    if not chat_session_id:
-        chat_session_id = str(uuid.uuid4())
-        session["chat_session_id"] = chat_session_id
+        return jsonify({"msg": str(e), "trace": None}), 400
 
     try:
+        chat_session_id = str(uuid.uuid4())
         chat_handler = None
+
         if db["type"] == DBType.MYSQL:
             chat_handler = MySQLChatHandler(
                 embedding_model_type=EmbeddingModelType(embedding_model_type),
@@ -68,10 +72,11 @@ def create_chat_session():
                 chat_session_id=chat_session_id,
             )
         CHAT_SESSION_CACHE[chat_session_id] = chat_handler
-        return jsonify({"message": "Chat handler init successfully."}), 200
+        return jsonify({"message": "Chat handler init successfully.", "chat_session_id": chat_session_id}), 200
     except Exception as e:
-        print(traceback.format_exc())
-        return jsonify({"error": str(e)}), 500
+        error = {"msg": "failed to create chat handler", "trace": traceback.format_exc()}
+        logger.error(error)
+        return jsonify(error), 500
 
 
 @chat.route("/send_message", methods=["POST"])
@@ -79,24 +84,26 @@ def send_message():
     schema = SendMessageSchema()
     try:
         data = schema.load(request.json)
+        logger.info("Got request: {}".format(data))
     except ValidationError as err:
-        return jsonify({"error:": f"failed to parse request for send_message - {err.messages}"}), 400
-
-    chat_session_id = session.get("chat_session_id", None)
-    if not chat_session_id:
-        return jsonify({"error": "No active chat session for this client."}), 400
+        error = {"msg": f"failed to parse request for send_message - {err.messages}", "trace": None}
+        return jsonify(error), 400
 
     try:
-        chat_handler: ChatHandler = CHAT_SESSION_CACHE.get(chat_session_id, None)
+        chat_handler: ChatHandler = CHAT_SESSION_CACHE.get(data["chat_session_id"], None)
         if not chat_handler:
-            return jsonify({"error": "Chat handler not initialized for this client."}), 400
+            error = {"msg": "Chat handler not initialized for this client.", "trace": None}
+            logger.error(error)
+            return jsonify(error), 400
         chat_response: ChatResponse = chat_handler.answer_user_question(data["question"])
         result = {
             "sql": chat_response.sql,
             "message": chat_response.message,
             "natural_language_answer": chat_response.natural_language_answer,
+            "data": chat_response.data,
         }
         return jsonify({"result": result}), 200
     except Exception as e:
-        print(traceback.format_exc())
-        return jsonify({"error": str(e)}), 500
+        error = {"msg": "failed to send message", "trace": traceback.format_exc()}
+        logger.error(error)
+        return jsonify(error), 500

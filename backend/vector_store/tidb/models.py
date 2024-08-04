@@ -21,6 +21,7 @@ def create_db_table_info_model(
         table_schema_embedding = Column(
             VectorType(embedding_model_dim), comment="hnsw(distance=cosine)", nullable=False
         )
+        owner = Column(Text(255), nullable=True)
         created_at = Column(DateTime, server_default=sqlalchemy.text("CURRENT_TIMESTAMP"))
         updated_at = Column(
             sqlalchemy.DateTime,
@@ -53,6 +54,7 @@ def create_question_sql_model(
         question_embedding = Column(VectorType(embedding_model_dim), comment="hnsw(distance=cosine)", nullable=False)
         sql = Column(Text, nullable=False)
         metadatas = Column(sqlalchemy.JSON, nullable=True)
+        owner = Column(Text(255), nullable=True)
         created_at = Column(DateTime, server_default=sqlalchemy.text("CURRENT_TIMESTAMP"))
         updated_at = Column(
             sqlalchemy.DateTime,

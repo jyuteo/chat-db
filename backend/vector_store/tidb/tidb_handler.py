@@ -4,7 +4,7 @@ import dotenv
 from dataclasses import dataclass, asdict
 from typing import List, Tuple, Dict
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_, and_
 from sqlalchemy.orm import sessionmaker
 
 from vector_store import VectorStoreHandler, VectorStoreConfig, DBTableInfo, QuestionSQL
@@ -63,25 +63,28 @@ class TiDBVectorStoreHandler(VectorStoreHandler):
             db.commit()
 
     def get_db_table_info_by_database_name_and_table_name(self, database_name: str, table_name: str) -> DBTableInfo:
-        with self.sessionmaker() as db:
-            data = (
-                db.query(self.DBTableInfoModel)
-                .filter(
-                    self.DBTableInfoModel.database_name == database_name, self.DBTableInfoModel.table_name == table_name
-                )
-                .all()
-            )
-        result = []
-        for d in data:
-            result.append(convert_sqlalchemy_model_to_dataclass(d, DBTableInfo))
-        assert len(result) <= 1
-        return result[0] if result else None
+        filter = {"database_name": database_name, "table_name": table_name}
+        data = self.get_db_table_info(filter)
+        assert len(data) <= 1
+        return data[0] if data else None
 
     def get_top_k_similar_db_table_info_with_table_schema_embedding(
-        self, query_embedding: List[float], k: int = 3, min_similarity: float = 0.7
+        self,
+        query_embedding: List[float],
+        k: int = 3,
+        min_similarity: float = 0.7,
+        filters: Dict = None,
     ) -> List[Tuple[DBTableInfo, float]]:
         max_distance = 1 - min_similarity
         with self.sessionmaker() as db:
+            query = db.query(self.DBTableInfoModel)
+            if filters:
+                for key, value in filters.items():
+                    if hasattr(self.DBTableInfoModel, key):
+                        if isinstance(value, list):
+                            query = query.filter(getattr(self.DBTableInfoModel, key).in_(value))
+                        else:
+                            query = query.filter(getattr(self.DBTableInfoModel, key) == value)
             distance = self.DBTableInfoModel.table_schema_embedding.cosine_distance(query_embedding).label("distance")
             data = (
                 db.query(self.DBTableInfoModel, distance)
@@ -115,10 +118,45 @@ class TiDBVectorStoreHandler(VectorStoreHandler):
             if filters:
                 for key, value in filters.items():
                     if hasattr(self.QuestionSQLModel, key):
-                        query = query.filter(getattr(self.QuestionSQLModel, key) == value)
+                        if isinstance(value, list):
+                            query = query.filter(getattr(self.QuestionSQLModel, key).in_(value))
+                        else:
+                            query = query.filter(getattr(self.QuestionSQLModel, key) == value)
             query = query.filter(distance <= max_distance).order_by(distance).limit(k)
             data = query.all()
         result = []
         for d, distance in data:
             result.append((convert_sqlalchemy_model_to_dataclass(d, QuestionSQL), 1 - distance))
+        return result
+
+    def get_db_table_info(self, filters: Dict = None) -> List[DBTableInfo]:
+        with self.sessionmaker() as db:
+            query = db.query(self.DBTableInfoModel)
+            if filters:
+                for key, value in filters.items():
+                    if hasattr(self.DBTableInfoModel, key):
+                        if isinstance(value, list):
+                            query = query.filter(getattr(self.DBTableInfoModel, key).in_(value))
+                        else:
+                            query = query.filter(getattr(self.DBTableInfoModel, key) == value)
+            data = query.all()
+        result = []
+        for d in data:
+            result.append(convert_sqlalchemy_model_to_dataclass(d, DBTableInfo))
+        return result
+
+    def get_question_sql_pairs(self, filters: Dict = None) -> List[QuestionSQL]:
+        with self.sessionmaker() as db:
+            query = db.query(self.QuestionSQLModel)
+            if filters:
+                for key, value in filters.items():
+                    if hasattr(self.QuestionSQLModel, key):
+                        if isinstance(value, list):
+                            query = query.filter(getattr(self.QuestionSQLModel, key).in_(value))
+                        else:
+                            query = query.filter(getattr(self.QuestionSQLModel, key) == value)
+            data = query.all()
+        result = []
+        for d in data:
+            result.append(convert_sqlalchemy_model_to_dataclass(d, QuestionSQL))
         return result

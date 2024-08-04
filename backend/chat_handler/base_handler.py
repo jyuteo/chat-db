@@ -2,6 +2,7 @@ import re
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import List
 
 from db_client import DBType, DBConnConfig, DBClientFactory, DBClient
 from embedding_models import EmbeddingModelType, EmbeddingModelConfig, EmbeddingModelFactory, EmbeddingModel
@@ -17,6 +18,7 @@ class ChatResponse:
     sql: str = None
     message: str = None
     natural_language_answer: str = None
+    data: List = None
 
 
 class ChatHandler(ABC):
@@ -27,8 +29,10 @@ class ChatHandler(ABC):
         llm_type: LLMType,
         db_type: DBType,
         chat_session_id: str = "",
+        vector_store_visible_owners: List[str] = ["public"],
     ):
         self.chat_session_id = chat_session_id
+        self.vector_store_visible_owners = vector_store_visible_owners
 
         try:
             self.vector_store_type = VectorStoreType(vector_store_type)
