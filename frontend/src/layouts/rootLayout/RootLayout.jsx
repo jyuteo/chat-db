@@ -29,7 +29,7 @@ const RootLayout = () => {
         <header>
           <Link to="/" className="logo">
             <img src="/logo.png" alt="" />
-            <span>LAMA AI</span>
+            <span>ChatDB</span>
           </Link>
           <div className="user">
             <SignedIn>

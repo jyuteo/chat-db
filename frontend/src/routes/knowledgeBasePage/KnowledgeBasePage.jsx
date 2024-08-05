@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import "./knowledgeBasePage.css";
 
 const KnowledgeBasePage = () => {
+  const { userId, isLoaded } = useAuth();
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openGroups, setOpenGroups] = useState({});
   const [showAddTableForm, setShowAddTableForm] = useState(false);
   const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
-
   const [tableSchemaFormData, setTableFormData] = useState({
     embeddingModelType: "sentence_transformer",
     vectorStoreType: "tidb",
@@ -28,8 +30,6 @@ const KnowledgeBasePage = () => {
     sql: "",
     owner: null,
   });
-
-  // State for notification
   const [notification, setNotification] = useState("");
   const [showNotification, setShowNotification] = useState(false);
 
@@ -60,6 +60,10 @@ const KnowledgeBasePage = () => {
       ...prevState,
       [index]: !prevState[index],
     }));
+  };
+
+  const handleSignInClick = () => {
+    navigate("/sign-in");
   };
 
   const handleAddTableClick = () => {
@@ -184,8 +188,7 @@ const KnowledgeBasePage = () => {
 
       try {
         const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL
+          `${import.meta.env.VITE_API_URL
           }/knowledge_base/add_question_sql_pairs`,
           {
             method: "POST",
@@ -217,8 +220,16 @@ const KnowledgeBasePage = () => {
   return (
     <div className="knowledge-base-page">
       <div className="top-bar">
-        <button onClick={handleAddTableClick}>Add Table Schema</button>
-        <button onClick={handleAddQuestionClick}>Add SQL Question</button>
+        {userId ? (
+          <>
+            <button onClick={handleAddTableClick}>Add Table Schema</button>
+            <button onClick={handleAddQuestionClick}>Add SQL Question</button>
+          </>
+        ) : (
+          <button onClick={handleSignInClick}>
+            Sign in to create your knowledge base
+          </button>
+        )}
       </div>
 
       {showAddTableForm && (

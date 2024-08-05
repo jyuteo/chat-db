@@ -146,7 +146,7 @@ const DashboardPage = () => {
       <div className="texts">
         <div className="logo">
           <img src="/logo.png" alt="Logo" />
-          <h1>LAMA AI</h1>
+          <h1>ChatDB</h1>
         </div>
         <div className="dbFormContainer">
           {!isLoading ? (
