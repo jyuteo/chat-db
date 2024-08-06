@@ -1,7 +1,7 @@
 import uuid
 import traceback
 
-from flask import Blueprint, session, jsonify, request
+from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 
 from embedding_models import EmbeddingModelType, SentenceTransformerEmbeddingModelConfig
@@ -73,7 +73,7 @@ def create_chat_session():
             )
         CHAT_SESSION_CACHE[chat_session_id] = chat_handler
         return jsonify({"message": "Chat handler init successfully.", "chat_session_id": chat_session_id}), 200
-    except Exception as e:
+    except Exception:
         error = {"msg": "failed to create chat handler", "trace": traceback.format_exc()}
         logger.error(error)
         return jsonify(error), 500
@@ -103,7 +103,7 @@ def send_message():
             "data": chat_response.data,
         }
         return jsonify({"result": result}), 200
-    except Exception as e:
+    except Exception:
         error = {"msg": "failed to send message", "trace": traceback.format_exc()}
         logger.error(error)
         return jsonify(error), 500

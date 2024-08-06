@@ -4,7 +4,7 @@ import dotenv
 from dataclasses import dataclass, asdict
 from typing import List, Tuple, Dict
 
-from sqlalchemy import create_engine, or_, and_
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from vector_store import VectorStoreHandler, VectorStoreConfig, DBTableInfo, QuestionSQL

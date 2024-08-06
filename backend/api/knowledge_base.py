@@ -66,7 +66,7 @@ def add_db_table_schemas():
             )
         vector_store_handler.insert_db_table_info(db_table_info_list)
         return jsonify({"message": "added db table info successfully."}), 200
-    except Exception as e:
+    except Exception:
         error = {"msg": "failed to add db table info", "trace": traceback.format_exc()}
         logger.error(error)
         return jsonify(error), 500
@@ -85,7 +85,6 @@ def add_question_sql_pairs():
             400,
         )
 
-    print(data)
     db_type = data["db_type"]
     embedding_model_type = data["embedding_model_type"]
     vector_store_type = data["vector_store_type"]
@@ -152,7 +151,7 @@ def add_question_sql_pairs():
             )
         vector_store_handler.insert_question_sql_pairs(question_sql_list)
         return jsonify({"message": "added question sql pairs successfully."}), 200
-    except Exception as e:
+    except Exception:
         error = {"msg": "failed to add question sql pairs", "trace": traceback.format_exc()}
         logger.error(error)
         return jsonify(error), 500
@@ -210,7 +209,7 @@ def get_user_knowledge_base():
             ),
             200,
         )
-    except Exception as e:
+    except Exception:
         error = {"msg": "failed to get knowledge base", "trace": traceback.format_exc()}
         logger.error(error)
         return jsonify(error), 500

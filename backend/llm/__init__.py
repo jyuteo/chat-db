@@ -17,4 +17,4 @@ class LLMClientFactory:
             assert llm_type == LLMType.GEMINI
             return GeminiLLMClient(llm_client_config)
         else:
-            raise ValueError(f"Unsupported llm type: {llm_type}")
+            raise ValueError(f"Unsupported LLM type: {llm_type}")

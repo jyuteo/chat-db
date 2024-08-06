@@ -6,7 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_session import Session
 
-from api import db, chat, knowledge_base
+from api import chat, knowledge_base
 
 dotenv.load_dotenv()
 
@@ -23,7 +23,6 @@ def init_app():
     app.config["SESSION_REDIS"] = redis.StrictRedis(host="localhost", port=6379, db=0)
     Session(app)
 
-    app.register_blueprint(db)
     app.register_blueprint(chat)
     app.register_blueprint(knowledge_base)
 
@@ -39,7 +38,7 @@ def list_routes(app):
 if __name__ == "__main__":
     app = init_app()
     list_routes(app)
-    app.run(host="127.0.0.1", port=5050, debug=True)
+    app.run(host="0.0.0.0", port=os.getenv("FLASK_PORT", 5050), debug=True)
 
     # from llm import GeminiLLMClient, GeminiLLMClientConfig
 

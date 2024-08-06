@@ -1,0 +1,30 @@
+version: '3.8'
+
+name: chat-db
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5050:5050"
+    env_file: ./backend/.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    env_file: ./frontend/.env
+    environment:
+      - VITE_API_URL=http://backend:5050
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
