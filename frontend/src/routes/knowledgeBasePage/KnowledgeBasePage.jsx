@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 import "./knowledgeBasePage.css";
 
 const KnowledgeBasePage = () => {
-  const { userId, isLoaded } = useAuth();
+  const navigate = useNavigate();
+  const { userId } = useAuth();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,9 +38,13 @@ const KnowledgeBasePage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/knowledge_base/get`
-      );
+      const response = userId
+        ? await fetch(
+            `${
+              import.meta.env.VITE_API_URL
+            }/knowledge_base/get?user_id=${userId}`
+          )
+        : await fetch(`${import.meta.env.VITE_API_URL}/knowledge_base/get`);
       if (!response.ok) {
         throw new Error("Failed to fetch knowledge base");
       }
@@ -116,7 +122,7 @@ const KnowledgeBasePage = () => {
             database_name: tableSchemaFormData.databaseName,
             table_name: tableSchemaFormData.tableName,
             table_schema: tableSchemaFormData.tableSchema,
-            owner: null,
+            owner: userId ? userId : null,
           },
         ],
       };
@@ -179,7 +185,7 @@ const KnowledgeBasePage = () => {
               : null,
             question: questionSQLFormData.question,
             sql: questionSQLFormData.sql,
-            owner: null,
+            owner: userId ? userId : null,
           },
         ],
       };
@@ -188,7 +194,8 @@ const KnowledgeBasePage = () => {
 
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL
+          `${
+            import.meta.env.VITE_API_URL
           }/knowledge_base/add_question_sql_pairs`,
           {
             method: "POST",

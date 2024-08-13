@@ -1,6 +1,6 @@
 import "./chatPage.css";
 import NewPrompt from "../../components/newPrompt/NewPrompt";
-import Message from "../../components/message/message";
+import Message from "../../components/message/Message";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 

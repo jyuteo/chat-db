@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import "./newPrompt.css";
 import Markdown from "react-markdown";
-import Message from "../message/message";
+import Message from "../message/Message";
 
 const NewPrompt = ({ chatSessionId }) => {
   const [question, setQuestion] = useState("");
