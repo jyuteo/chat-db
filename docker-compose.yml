@@ -13,16 +13,6 @@ services:
     depends_on:
       - redis
 
-  frontend:
-    build:
-      context: ./frontend
-    command: npm run dev --port 3000
-    ports:
-      - "3000:80"
-    env_file: ./frontend/.env
-    environment:
-      - VITE_API_URL=http://backend:5050
-
   redis:
     image: redis:alpine
     ports:
