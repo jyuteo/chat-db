@@ -5,7 +5,7 @@ import "./knowledgeBasePage.css";
 
 const KnowledgeBasePage = () => {
   const navigate = useNavigate();
-  const { userId } = useAuth();
+  const { isSignedIn, userId } = useAuth();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ const KnowledgeBasePage = () => {
   const [notification, setNotification] = useState("");
   const [showNotification, setShowNotification] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (userId) => {
     try {
       setLoading(true);
       const response = userId
@@ -58,8 +58,12 @@ const KnowledgeBasePage = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isSignedIn && userId !== undefined) {
+      fetchData(userId);
+    } else if (!isSignedIn) {
+      fetchData(null);
+    }
+  }, [isSignedIn, userId]);
 
   const toggleGroup = (index) => {
     setOpenGroups((prevState) => ({

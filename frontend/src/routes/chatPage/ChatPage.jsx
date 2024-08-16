@@ -11,9 +11,13 @@ const ChatPage = () => {
   const [chat, setChat] = useState([]);
   const [dbInfo, setDbInfo] = useState({ dbHost: "", dbPort: "", dbName: "" });
 
-  useEffect(() => {
+  const updateChatHistory = () => {
     const chatHistory = JSON.parse(localStorage.getItem(chatSessionId)) || [];
     setChat(chatHistory);
+  };
+
+  useEffect(() => {
+    updateChatHistory()
     const info =
       JSON.parse(localStorage.getItem(`chat_session_info_${chatSessionId}`)) ||
       {};
@@ -42,7 +46,7 @@ const ChatPage = () => {
               <Message message={message} />
             </div>
           ))}
-          <NewPrompt chatSessionId={chatSessionId} />
+          <NewPrompt chatSessionId={chatSessionId} updateChat={updateChatHistory} />
         </div>
       </div>
     </div>

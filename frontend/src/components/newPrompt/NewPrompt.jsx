@@ -3,7 +3,7 @@ import "./newPrompt.css";
 import Markdown from "react-markdown";
 import Message from "../message/Message";
 
-const NewPrompt = ({ chatSessionId }) => {
+const NewPrompt = ({ chatSessionId, updateChat }) => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -58,8 +58,9 @@ const NewPrompt = ({ chatSessionId }) => {
 
       localStorage.setItem(chatSessionId, JSON.stringify(chatHistory));
       setIsAnswered(false);
+      updateChat();
     }
-  }, [isAnswered, chatSessionId, question, answer, error]);
+  }, [isAnswered, chatSessionId, updateChat, question, answer, error]);
 
   const add = useCallback(
     async (question) => {
