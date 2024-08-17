@@ -59,6 +59,8 @@ const NewPrompt = ({ chatSessionId, updateChat }) => {
       localStorage.setItem(chatSessionId, JSON.stringify(chatHistory));
       setIsAnswered(false);
       updateChat();
+      setQuestion("");
+      setAnswer("");
     }
   }, [isAnswered, chatSessionId, updateChat, question, answer, error]);
 
